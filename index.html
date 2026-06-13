@@ -2,19 +2,100 @@
 <html>
 <head>
     <title>Cookie Clicker</title>
+
+    <style>
+        @keyframes clickBounce {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(0.85); }
+            100% { transform: scale(1); }
+        }
+
+        .clicked {
+            animation: clickBounce 0.15s ease;
+        }
+
+        body {
+            background-color: chocolate;
+            font-family: Arial;
+            color: white;
+            margin: 0;
+        }
+
+        #game {
+            text-align: center;
+            position: relative;
+        }
+
+        #shop {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background: #f5e0b7;
+            color: black;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .item {
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .floating {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            animation: floatUp 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-60px);
+            }
+        }
+    </style>
 </head>
 
-<body style="background-color:brown; text-align:center; font-family:Arial; color:white;">
+<body>
 
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
+<div id="game">
+
+<img id="cookie"
+src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
 onclick="clickCookie()"
 style="width:200px; cursor:pointer;"
 alt="cookie">
 
 <p id="cookieCount">Cookies: 0</p>
 
-<button onclick="buyCursor()">Buy Cursor</button>
-<button onclick="buyGrandma()">Buy Grandma</button>
+</div>
+
+<div id="shop">
+    <h2>Shop</h2>
+
+    <div class="item">
+        <button onclick="buyCursor()">Buy Cursor</button>
+        <p id="cursorInfo"></p>
+    </div>
+
+    <div class="item">
+        <button onclick="buyGrandma()">Buy Grandma</button>
+        <p id="grandmaInfo"></p>
+    </div>
+</div>
 
 <script>
 
@@ -36,10 +117,38 @@ let grandma = {
 function updateScreen() {
     document.getElementById("cookieCount").innerText =
         "Cookies: " + cookies;
+
+    document.getElementById("cursorInfo").innerText =
+        `Owned: ${cursor.owned} | Cost: ${cursor.cost} | +${cursor.cps}/sec`;
+
+    document.getElementById("grandmaInfo").innerText =
+        `Owned: ${grandma.owned} | Cost: ${grandma.cost} | +${grandma.cps}/sec`;
 }
 
 function clickCookie() {
     cookies += 1;
+
+    let cookie = document.getElementById("cookie");
+    cookie.classList.remove("clicked");
+    void cookie.offsetWidth;
+    cookie.classList.add("clicked");
+
+    let floatText = document.createElement("div");
+    floatText.innerText = "+1";
+    floatText.classList.add("floating");
+
+    document.getElementById("game").appendChild(floatText);
+
+    let rect = cookie.getBoundingClientRect();
+    let gameRect = document.getElementById("game").getBoundingClientRect();
+
+    floatText.style.left = (rect.left - gameRect.left + 80) + "px";
+    floatText.style.top = (rect.top - gameRect.top + 80) + "px";
+
+    setTimeout(() => {
+        floatText.remove();
+    }, 800);
+
     updateScreen();
 }
 
@@ -49,8 +158,8 @@ function buyCursor() {
         cursor.owned += 1;
 
         cookiesPerSecond += cursor.cps;
-
         cursor.cost = Math.floor(cursor.cost * 1.2);
+
         updateScreen();
     }
 }
@@ -61,8 +170,8 @@ function buyGrandma() {
         grandma.owned += 1;
 
         cookiesPerSecond += grandma.cps;
-
         grandma.cost = Math.floor(grandma.cost * 1.2);
+
         updateScreen();
     }
 }
