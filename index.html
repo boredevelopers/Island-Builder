@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cookie Clicker</title>
+    <title>Island Builder</title>
 
     <style>
         @keyframes clickBounce {
@@ -15,19 +15,23 @@
         }
 
         body {
-            background-color: chocolate;
-            font-family: Arial, sans-serif;
-            color: white;
             margin: 0;
+            font-family: Arial;
+            color: white;
+            background: linear-gradient(
+                to bottom,
+                #87ceeb 0%,
+                #87ceeb 60%,
+                #3cb371 60%,
+                #2e8b57 100%
+            );
         }
 
         #game {
             text-align: center;
-            position: relative;
             padding-top: 80px;
         }
 
-        /* TOP BAR */
         #topBar {
             position: fixed;
             top: 10px;
@@ -37,12 +41,6 @@
             z-index: 2000;
         }
 
-        #topBar button {
-            width: auto;
-            padding: 8px 12px;
-        }
-
-        /* SHOP */
         #shop {
             position: fixed;
             right: -220px;
@@ -52,7 +50,6 @@
             background: #f5e0b7;
             color: black;
             padding: 15px;
-            text-align: left;
             transition: right 0.3s ease;
         }
 
@@ -60,21 +57,18 @@
             right: 0;
         }
 
-        #shop h2 {
-            margin-top: 40px;
-        }
-
-        .item {
-            margin-bottom: 15px;
-        }
-
         button {
             cursor: pointer;
         }
 
-        button:hover {
+        #tree {
+            width: 220px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        #tree:hover {
             transform: scale(1.05);
-            transition: 0.1s;
         }
 
         .floating {
@@ -94,168 +88,156 @@
 
 <body>
 
-<!-- TOP BAR -->
 <div id="topBar">
     <button onclick="toggleShop()">☰ Shop</button>
-    <button onclick="saveGame()">Save Game</button>
+    <button onclick="saveGame()">Save</button>
 </div>
 
-<!-- GAME -->
 <div id="game">
-    <img id="cookie"
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
-    onclick="clickCookie()"
-    style="width:200px; cursor:pointer;"
-    alt="cookie">
 
-    <p id="cookieCount">Cookies: 0</p>
-    <p id="stats"></p>
+    <img id="tree" src="assets/tree.png" onclick="clickTree()">
+
+    <p id="woodText">Wood: 0</p>
 </div>
 
-<!-- SHOP -->
 <div id="shop">
     <h2>Shop</h2>
 
-    <div class="item">
-        <button onclick="buyCursor()">Buy Cursor</button>
-        <p id="cursorInfo"></p>
-    </div>
+    <button onclick="buyLumberjack()">Hire Lumberjack 🪓</button>
+    <p id="lumberjackInfo"></p>
 
-    <div class="item">
-        <button onclick="buyGrandma()">Buy Grandma</button>
-        <p id="grandmaInfo"></p>
-    </div>
+    <button onclick="buyWorker()">Hire Worker 👷</button>
+    <p id="workerInfo"></p>
 </div>
 
 <script>
-/* GAME STATE */
-let cookies = 0;
-let cookiesPerSecond = 0;
 
-let cursor = { cost: 10, owned: 0, cps: 1 };
-let grandma = { cost: 100, owned: 0, cps: 5 };
+/* STATE */
 
-let totalClicks = 0;
-let totalCookies = 0;
+let stone = 0;
+let stonePerSecond = 0;
+
+let wood = 0;
+let woodPerSecond = 0;
+
+let miner = {
+    cost: 25,
+    owned: 0,
+    cps: 1
+};
+
+let lumberjack = { cost: 10, owned: 0, cps: 1 };
+let worker = { cost: 100, owned: 0, cps: 5 };
+
 let playTime = 0;
 
-let shopOpen = false;
+/* CLICK */
 
-/* SHOP */
-function toggleShop() {
-    shopOpen = !shopOpen;
-    document.getElementById("shop").classList.toggle("open");
+function clickRock() {
+    stone++;
+    updateScreen();
+
 }
+function clickTree() {
+    wood++;
 
-/* SAVE */
-function saveGame() {
-    localStorage.setItem("cookies", cookies);
-    localStorage.setItem("cookiesPerSecond", cookiesPerSecond);
-    localStorage.setItem("cursor", JSON.stringify(cursor));
-    localStorage.setItem("grandma", JSON.stringify(grandma));
-    localStorage.setItem("totalClicks", totalClicks);
-    localStorage.setItem("totalCookies", totalCookies);
-    localStorage.setItem("playTime", playTime);
-}
+    let tree = document.getElementById("tree");
+    tree.classList.remove("clicked");
+    void tree.offsetWidth;
+    tree.classList.add("clicked");
 
-/* LOAD */
-function loadGame() {
-    cookies = Number(localStorage.getItem("cookies")) || 0;
-    cookiesPerSecond = Number(localStorage.getItem("cookiesPerSecond")) || 0;
-
-    cursor = JSON.parse(localStorage.getItem("cursor")) || cursor;
-    grandma = JSON.parse(localStorage.getItem("grandma")) || grandma;
-
-    totalClicks = Number(localStorage.getItem("totalClicks")) || 0;
-    totalCookies = Number(localStorage.getItem("totalCookies")) || 0;
-    playTime = Number(localStorage.getItem("playTime")) || 0;
-}
-
-/* UI */
-function updateScreen() {
-    document.getElementById("cookieCount").innerText = "Cookies: " + cookies;
-
-    document.getElementById("cursorInfo").innerText =
-        `Owned: ${cursor.owned} | Cost: ${cursor.cost} | +${cursor.cps}/sec`;
-
-    document.getElementById("grandmaInfo").innerText =
-        `Owned: ${grandma.owned} | Cost: ${grandma.cost} | +${grandma.cps}/sec`;
-
-    document.getElementById("stats").innerText =
-        `Clicks: ${totalClicks} | Total Cookies: ${totalCookies} | Time: ${playTime}s`;
-}
-
-/* CLICK COOKIE */
-function clickCookie() {
-    cookies++;
-    totalClicks++;
-    totalCookies++;
-
-    let cookie = document.getElementById("cookie");
-
-    cookie.classList.remove("clicked");
-    void cookie.offsetWidth; // Trigger reflow to restart animation
-    cookie.classList.add("clicked");
-
-    // Floating text
     let floatText = document.createElement("div");
     floatText.innerText = "+1";
     floatText.classList.add("floating");
 
     document.getElementById("game").appendChild(floatText);
 
-    let rect = cookie.getBoundingClientRect();
-    let gameRect = document.getElementById("game").getBoundingClientRect();
-
-    floatText.style.left = (rect.left - gameRect.left + 80) + "px";
-    floatText.style.top = (rect.top - gameRect.top + 80) + "px";
-
     setTimeout(() => floatText.remove(), 800);
 
     updateScreen();
 }
 
-/* BUY MECHANICS */
-function buyCursor() {
-    if (cookies >= cursor.cost) {
-        cookies -= cursor.cost;
-        cursor.owned++;
-        cookiesPerSecond += cursor.cps;
-        cursor.cost = Math.floor(cursor.cost * 1.2);
+/* SHOP */
+
+function buyMiner() {
+    if(wood >= miner.cost) {
+        wood -= miner.cost;
+        miner.owned++;
+        stonePerSecond += miner.cps;
+        miner.cost = Math.floor(miner.cost * 1.2);
+        updateScreen();
+        
+    }
+}
+function buyLumberjack() {
+    if (wood >= lumberjack.cost) {
+        wood -= lumberjack.cost;
+        lumberjack.owned++;
+        woodPerSecond += lumberjack.cps;
+        lumberjack.cost = Math.floor(lumberjack.cost * 1.2);
         updateScreen();
     }
 }
 
-function buyGrandma() {
-    if (cookies >= grandma.cost) {
-        cookies -= grandma.cost;
-        grandma.owned++;
-        cookiesPerSecond += grandma.cps;
-        grandma.cost = Math.floor(grandma.cost * 1.2);
+function buyWorker() {
+    if (wood >= worker.cost) {
+        wood -= worker.cost;
+        worker.owned++;
+        woodPerSecond += worker.cps;
+        worker.cost = Math.floor(worker.cost * 1.2);
         updateScreen();
     }
 }
 
-/* TIMERS & BACKGROUND LOOPS */
-// Fixed typo here: changed 1000l() to 1000);
+/* UI */
+function updateScreen() {
+    document.getElementById("woodText").innerText = "Wood: " + wood;
+
+    document.getElementById("lumberjackInfo").innerText =
+        `Owned: ${lumberjack.owned} | Cost: ${lumberjack.cost} | +${lumberjack.cps}/sec`;
+
+    document.getElementById("workerInfo").innerText =
+        `Owned: ${worker.owned} | Cost: ${worker.cost} | +${worker.cps}/sec`;
+}
+
+/* LOOP */
 setInterval(() => {
-    cookies += cookiesPerSecond;
-    totalCookies += cookiesPerSecond;
+    wood += woodPerSecond;
+    stone +=  stonePerSecond;
     updateScreen();
 }, 1000);
 
-// Fixed typo here: added opening wrapper syntax to the interval call
-setInterval(() => {
-    playTime++;
-    updateScreen(); // Kept screen refreshed as time steps up
-}, 1000);
+setInterval(() => playTime++, 1000);
 
-/* AUTO SAVE */
-setInterval(saveGame, 5000);
+/* SAVE */
+function saveGame() {
+    localStorage.setItem("wood", wood);
+    localStorage.setItem("woodPerSecond", woodPerSecond);
+    localStorage.setItem("lumberjack", JSON.stringify(lumberjack));
+    localStorage.setItem("worker", JSON.stringify(worker));
+    localStorage.setItem("playTime", playTime);
+}
 
-/* INITIALIZATION */
+/* LOAD */
+function loadGame() {
+    wood = Number(localStorage.getItem("wood")) || 0;
+    woodPerSecond = Number(localStorage.getItem("woodPerSecond")) || 0;
+
+    lumberjack = JSON.parse(localStorage.getItem("lumberjack")) || lumberjack;
+    worker = JSON.parse(localStorage.getItem("worker")) || worker;
+
+    playTime = Number(localStorage.getItem("playTime")) || 0;
+}
+
+/* SHOP TOGGLE */
+function toggleShop() {
+    document.getElementById("shop").classList.toggle("open");
+}
+
+/* START */
 loadGame();
 updateScreen();
+
 </script>
 
 </body>
