@@ -6,7 +6,7 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             color: white;
             background: linear-gradient(
                 to bottom,
@@ -15,6 +15,7 @@
                 #3cb371 55%,
                 #2e8b57 100%
             );
+            height: 100vh;
         }
 
         #game {
@@ -41,6 +42,7 @@
             color: black;
             padding: 15px;
             transition: right 0.3s ease;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.3);
         }
 
         #shop.open {
@@ -50,12 +52,14 @@
         button {
             cursor: pointer;
             margin-top: 6px;
+            padding: 5px 10px;
         }
 
         #tree, #rock {
             width: 180px;
             cursor: pointer;
             margin: 10px;
+            transition: transform 0.1s ease;
         }
 
         #tree:hover, #rock:hover {
@@ -72,27 +76,26 @@
 </div>
 
 <div id="game">
-
-    <img id="tree" src="assets/tree.png" onclick="clickTree()">
-    <img id="rock" src="assets/rock.png" onclick="clickRock()">
+    <img id="tree" src="assets/tree.png" alt="Tree" onclick="clickTree()">
+    <img id="rock" src="assets/rock.png" alt="Rock" onclick="clickRock()">
 
     <p id="woodText">Wood: 0</p>
     <p id="stoneText">Stone: 0</p>
 
-    <p id="stats"></p>
+    <p id="stats">Time: 0s</p>
 </div>
 
 <div id="shop">
     <h2>Shop</h2>
 
-    <h3>Wood</h3>
+    <h3>Wood Upgrades</h3>
     <button onclick="buyLumberjack()">Lumberjack 🪓</button>
     <p id="lumberjackInfo"></p>
 
     <button onclick="buyWorker()">Worker 👷</button>
     <p id="workerInfo"></p>
 
-    <h3>Stone</h3>
+    <h3>Stone Upgrades</h3>
     <button onclick="buyMiner()">Miner ⛏️</button>
     <p id="minerInfo"></p>
 </div>
@@ -108,7 +111,7 @@ let stonePerSecond = 0;
 
 let lumberjack = { cost: 10, owned: 0, cps: 1 };
 let worker = { cost: 50, owned: 0, cps: 3 };
-let miner = { cost: 25, owned: 0, cps: 1 };
+let miner = { cost: 25, owned: 0, cps: 1 }; // Costs wood, produces stone
 
 let playTime = 0;
 
@@ -145,6 +148,7 @@ function buyWorker() {
 }
 
 function buyMiner() {
+    // Kept your setting where purchasing a Miner costs wood, but generates stone
     if (wood >= miner.cost) {
         wood -= miner.cost;
         miner.owned++;
@@ -160,28 +164,26 @@ function updateScreen() {
     document.getElementById("stoneText").innerText = "Stone: " + stone;
 
     document.getElementById("lumberjackInfo").innerText =
-        `Owned: ${lumberjack.owned} | Cost: ${lumberjack.cost} | +${lumberjack.cps}/sec`;
+        `Owned: ${lumberjack.owned} | Cost: ${lumberjack.cost} Wood | +${lumberjack.cps}/sec`;
 
     document.getElementById("workerInfo").innerText =
-        `Owned: ${worker.owned} | Cost: ${worker.cost} | +${worker.cps}/sec`;
+        `Owned: ${worker.owned} | Cost: ${worker.cost} Wood | +${worker.cps}/sec`;
 
     document.getElementById("minerInfo").innerText =
-        `Owned: ${miner.owned} | Cost: ${miner.cost} | +${miner.cps}/sec`;
+        `Owned: ${miner.owned} | Cost: ${miner.cost} Wood | +${miner.cps}/sec`;
 
-    document.getElementById("stats").innerText =
-        `Time: ${playTime}s`;
+    document.getElementById("stats").innerText = `Time: ${playTime}s`;
 }
 
-/* LOOP */
+/* CORE LOOP */
 setInterval(() => {
     wood += woodPerSecond;
     stone += stonePerSecond;
+    playTime++;
     updateScreen();
 }, 1000);
 
-setInterval(() => playTime++, 1000);
-
-/* SHOP */
+/* SHOP PANEL TOGGLE */
 function toggleShop() {
     document.getElementById("shop").classList.toggle("open");
 }
@@ -190,30 +192,31 @@ function toggleShop() {
 function saveGame() {
     localStorage.setItem("wood", wood);
     localStorage.setItem("stone", stone);
-
     localStorage.setItem("woodPerSecond", woodPerSecond);
     localStorage.setItem("stonePerSecond", stonePerSecond);
-
     localStorage.setItem("lumberjack", JSON.stringify(lumberjack));
     localStorage.setItem("worker", JSON.stringify(worker));
     localStorage.setItem("miner", JSON.stringify(miner));
-
     localStorage.setItem("playTime", playTime);
+    alert("Game saved successfully!");
 }
 
 /* LOAD */
 function loadGame() {
-    wood = Number(localStorage.getItem("wood")) || 0;
-    stone = Number(localStorage.getItem("stone")) || 0;
+    // Check if a save actually exists before trying to load data
+    if (localStorage.getItem("wood") !== null) {
+        wood = Number(localStorage.getItem("wood")) || 0;
+        stone = Number(localStorage.getItem("stone")) || 0;
+        
+        woodPerSecond = Number(localStorage.getItem("woodPerSecond")) || 0;
+        stonePerSecond = Number(localStorage.getItem("stonePerSecond")) || 0;
 
-    woodPerSecond = Number(localStorage.getItem("woodPerSecond")) || 0;
-    stonePerSecond = Number(localStorage.getItem("stonePerSecond")) || 0;
+        lumberjack = JSON.parse(localStorage.getItem("lumberjack")) || lumberjack;
+        worker = JSON.parse(localStorage.getItem("worker")) || worker;
+        miner = JSON.parse(localStorage.getItem("miner")) || miner;
 
-    lumberjack = JSON.parse(localStorage.getItem("lumberjack")) || lumberjack;
-    worker = JSON.parse(localStorage.getItem("worker")) || worker;
-    miner = JSON.parse(localStorage.getItem("miner")) || miner;
-
-    playTime = Number(localStorage.getItem("playTime")) || 0;
+        playTime = Number(localStorage.getItem("playTime")) || 0;
+    }
 }
 
 /* START */
