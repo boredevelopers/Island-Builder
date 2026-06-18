@@ -77,8 +77,8 @@
 </div>
 
 <div id="game">
-    <img id="tree" src="assets/tree.png" alt="Tree" onclick="clickTree()">
-    <img id="rock" src="assets/rock.png" alt="Rock" onclick="clickRock()">
+    <img id="tree" src="assets/tree.png" alt="Tree" onclick="gatherWood()">
+    <img id="rock" src="assets/rock.png" alt="Rock" onclick="gatherStone()">
 
     <p id="woodText">Wood: 0</p>
     <p id="stoneText">Stone: 0</p>
@@ -103,27 +103,36 @@
 
 <script>
 
-/* STATE */
+/* =========================
+   STATE (CORE RESOURCES)
+========================= */
 let wood = 0;
 let stone = 0;
-
-
-let huts = 0;
-let villagers = 0;
-
-
-let villagerCost =30;
 
 let woodPerSecond = 0;
 let stonePerSecond = 0;
 
+/* =========================
+   UPGRADES
+========================= */
 let lumberjack = { cost: 10, owned: 0, cps: 1 };
 let worker = { cost: 50, owned: 0, cps: 3 };
-let miner = { cost: 25, owned: 0, cps: 1 }; // Costs wood, produces stone
+let miner = { cost: 25, owned: 0, cps: 1 };
 
+/* =========================
+   PROGRESSION (READY FOR SESSION 2)
+========================= */
+let huts = 0;
+let villagers = 0;
+
+/* =========================
+   TIME
+========================= */
 let playTime = 0;
 
-/* CLICK */
+/* =========================
+   CLICK SYSTEM
+========================= */
 function gatherWood() {
     wood++;
     updateScreen();
@@ -134,7 +143,9 @@ function gatherStone() {
     updateScreen();
 }
 
-/* BUY */
+/* =========================
+   BUY SYSTEM
+========================= */
 function buyLumberjack() {
     if (wood >= lumberjack.cost) {
         wood -= lumberjack.cost;
@@ -156,7 +167,6 @@ function buyWorker() {
 }
 
 function buyMiner() {
-    // Kept your setting where purchasing a Miner costs wood, but generates stone
     if (wood >= miner.cost) {
         wood -= miner.cost;
         miner.owned++;
@@ -166,7 +176,9 @@ function buyMiner() {
     }
 }
 
-/* UI */
+/* =========================
+   UI UPDATE
+========================= */
 function updateScreen() {
     document.getElementById("woodText").innerText = "Wood: " + wood;
     document.getElementById("stoneText").innerText = "Stone: " + stone;
@@ -183,7 +195,9 @@ function updateScreen() {
     document.getElementById("stats").innerText = `Time: ${playTime}s`;
 }
 
-/* CORE LOOP */
+/* =========================
+   GAME LOOP
+========================= */
 setInterval(() => {
     wood += woodPerSecond;
     stone += stonePerSecond;
@@ -191,12 +205,16 @@ setInterval(() => {
     updateScreen();
 }, 1000);
 
-/* SHOP PANEL TOGGLE */
+/* =========================
+   SHOP TOGGLE
+========================= */
 function toggleShop() {
     document.getElementById("shop").classList.toggle("open");
 }
 
-/* SAVE */
+/* =========================
+   SAVE / LOAD SYSTEM
+========================= */
 function saveGame() {
     localStorage.setItem("wood", wood);
     localStorage.setItem("stone", stone);
@@ -209,13 +227,12 @@ function saveGame() {
     alert("Game saved successfully!");
 }
 
-/* LOAD */
 function loadGame() {
-    // Check if a save actually exists before trying to load data
     if (localStorage.getItem("wood") !== null) {
+
         wood = Number(localStorage.getItem("wood")) || 0;
         stone = Number(localStorage.getItem("stone")) || 0;
-        
+
         woodPerSecond = Number(localStorage.getItem("woodPerSecond")) || 0;
         stonePerSecond = Number(localStorage.getItem("stonePerSecond")) || 0;
 
@@ -227,7 +244,9 @@ function loadGame() {
     }
 }
 
-/* START */
+/* =========================
+   START GAME
+========================= */
 loadGame();
 updateScreen();
 
