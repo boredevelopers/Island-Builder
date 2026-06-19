@@ -1,219 +1,327 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
+
 <head>
+
 <title>Island Builder</title>
+
 
 <style>
 
-body {
-    margin:0;
-    font-family:Arial,sans-serif;
-    color:white;
-    overflow:hidden;
-}
 
+body{
 
-/* =========================
-   WORLD
-========================= */
-
-#game {
-
-    width:100vw;
-    height:100vh;
-
-    position:relative;
-
-    background:
-    linear-gradient(
-        to bottom,
-        #87ceeb 0%,
-        #87ceeb 55%,
-        #3cb371 55%,
-        #2e8b57 100%
-    );
-}
-
-
-/* =========================
-   TOP BAR
-========================= */
-
-#topBar {
-
-    position:fixed;
-    top:10px;
-    right:10px;
-
-    z-index:1000;
-
-}
-
-
-button {
-
-    cursor:pointer;
-    padding:8px;
-}
-
-
-/* =========================
-   WORLD OBJECTS
-========================= */
-
-.object {
-
-    position:absolute;
-
-    image-rendering:pixelated;
-
-    cursor:pointer;
-
-    transition:0.15s;
-
-}
-
-
-.object:hover {
-
-    transform:scale(1.1);
-
-}
-
-
-#tree {
-
-    width:250px;
-
-    left:35%;
-    top:45%;
-
-}
-
-
-#rock {
-
-    width:180px;
-
-    left:65%;
-    top:55%;
-
-}
-
-
-/* TELEPORTER */
-
-#teleporter {
-
-    width:120px;
-
-    left:50%;
-    top:70%;
-
-}
-
-
-/* =========================
-   QUARRY
-========================= */
-
-#quarry {
-
-    display:none;
-
-    width:100vw;
-    height:100vh;
-
-    background:
-
-    linear-gradient(
-        to bottom,
-        #555,
-        #222
-    );
-
-    position:absolute;
-
-}
-
-
-#miner {
-
-    width:220px;
-
-    position:absolute;
-
-    left:45%;
-    top:45%;
+margin:0;
+font-family:Arial;
+color:white;
+overflow:hidden;
 
 }
 
 
 
 /* =========================
-   TEXT
+WORLD
 ========================= */
 
 
-#stats {
+#game{
 
-    position:absolute;
 
-    top:70px;
-    left:20px;
+width:100vw;
+height:100vh;
 
-    background:rgba(0,0,0,0.4);
+position:relative;
 
-    padding:10px;
+
+background:
+
+linear-gradient(
+
+to bottom,
+
+#87ceeb 0%,
+#87ceeb 55%,
+#3cb371 55%,
+#2e8b57 100%
+
+);
+
 
 }
 
 
-.floating {
+
+/* =========================
+TOP BAR
+========================= */
 
 
-    position:absolute;
+#topBar{
 
-    animation:float 1s forwards;
+
+position:fixed;
+
+top:10px;
+right:10px;
+
+z-index:1000;
+
 
 }
 
 
 
-@keyframes float {
+button{
 
 
-    from {
+padding:8px;
 
-        opacity:1;
-        transform:translateY(0);
+cursor:pointer;
 
-    }
-
-
-    to {
-
-        opacity:0;
-        transform:translateY(-60px);
-
-    }
 
 }
+
+
+
+/* =========================
+OBJECTS
+========================= */
+
+
+.object{
+
+
+position:absolute;
+
+image-rendering:pixelated;
+
+cursor:pointer;
+
+transition:.15s;
+
+
+}
+
+
+
+.object:hover{
+
+transform:scale(1.1);
+
+}
+
+
+
+#tree{
+
+
+width:280px;
+
+left:35%;
+
+top:45%;
+
+
+}
+
+
+
+
+#teleporter{
+
+
+width:130px;
+
+left:50%;
+
+top:70%;
+
+
+display:none;
+
+
+}
+
+
+
+
+
+/* =========================
+QUARRY
+========================= */
+
+
+#quarry{
+
+
+display:none;
+
+
+width:100vw;
+
+height:100vh;
+
+
+background:
+
+
+linear-gradient(
+
+to bottom,
+
+#777,
+
+#222
+
+);
+
+
+position:absolute;
+
+
+
+}
+
+
+
+#quarryMiner{
+
+
+position:absolute;
+
+width:220px;
+
+left:45%;
+
+top:45%;
+
+
+cursor:pointer;
+
+
+}
+
+
+
+/* =========================
+SHOP
+========================= */
+
+
+#shop{
+
+
+display:none;
+
+
+position:fixed;
+
+right:0;
+
+top:0;
+
+width:240px;
+
+height:100vh;
+
+
+background:#f5e0b7;
+
+color:black;
+
+padding:15px;
+
+
+}
+
+
+
+/* =========================
+TEXT
+========================= */
+
+
+#stats{
+
+
+position:absolute;
+
+top:20px;
+
+left:20px;
+
+
+background:rgba(0,0,0,.4);
+
+padding:10px;
+
+
+}
+
+
+
+.floating{
+
+
+position:absolute;
+
+animation:float 1s forwards;
+
+
+}
+
+
+
+@keyframes float{
+
+
+from{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+
+to{
+
+opacity:0;
+transform:translateY(-60px);
+
+
+}
+
+
+}
+
 
 
 </style>
 
+
 </head>
+
 
 
 <body>
 
 
+
 <div id="topBar">
 
-<button onclick="saveGame()">Save</button>
+
+<button onclick="saveGame()">
+
+Save
+
+</button>
+
 
 </div>
+
+
+
 
 
 
@@ -221,24 +329,21 @@ button {
 
 
 <img id="tree"
+
 class="object"
+
 src="assets/tree.png"
+
 onclick="gatherWood()">
 
 
-
-<img id="rock"
-class="object"
-src="assets/rock.png"
-onclick="gatherStone()">
-
-
-
 <img id="teleporter"
+
 class="object"
+
 src="assets/teleporter.png"
-onclick="useTeleporter()"
-style="display:none;">
+
+onclick="enterQuarry()">
 
 
 
@@ -250,13 +355,39 @@ style="display:none;">
 
 
 
+
 <div id="quarry">
 
 
-<img id="miner"
+<img id="quarryMiner"
+
 src="assets/miner.png"
+
 onclick="mineStone()">
 
+
+
+<div id="quarryStats"></div>
+
+
+</div>
+
+
+
+
+
+
+<div id="shop">
+
+
+<h2>Shop</h2>
+
+
+<p>
+
+Future upgrades here
+
+</p>
 
 
 </div>
@@ -268,27 +399,31 @@ onclick="mineStone()">
 <script>
 
 
+
 /* =========================
-   STATE
+STATE
 ========================= */
 
 
-let wood = 0;
+let wood=0;
 
-let stone = 0;
-
-
-let teleporterUnlocked = false;
+let stone=0;
 
 
-let locationName = "Island";
+let tpUnlocked=false;
+
+
+let shopUnlocked=false;
+
+
+let currentArea="Island";
 
 
 
 
 
 /* =========================
-   RESOURCES
+WOOD
 ========================= */
 
 
@@ -298,7 +433,88 @@ function gatherWood(){
 wood++;
 
 
-showText("+1 Wood");
+popup("+1 Wood");
+
+
+checkUnlock();
+
+
+update();
+
+
+}
+
+
+
+
+
+
+/* =========================
+TELEPORTER
+========================= */
+
+
+function checkUnlock(){
+
+
+if(
+
+wood>=250
+
+&&
+
+!tpUnlocked
+
+){
+
+
+tpUnlocked=true;
+
+
+shopUnlocked=true;
+
+
+
+document.getElementById("teleporter")
+
+.style.display="block";
+
+
+
+document.getElementById("shop")
+
+.style.display="block";
+
+
+
+popup("Teleporter Unlocked!");
+
+
+
+}
+
+
+}
+
+
+
+
+
+function enterQuarry(){
+
+
+document.getElementById("game")
+
+.style.display="none";
+
+
+
+document.getElementById("quarry")
+
+.style.display="block";
+
+
+currentArea="Quarry";
 
 
 update();
@@ -309,22 +525,11 @@ update();
 
 
 
-function gatherStone(){
 
 
-stone++;
-
-
-showText("+1 Stone");
-
-
-update();
-
-
-}
-
-
-
+/* =========================
+STONE
+========================= */
 
 
 function mineStone(){
@@ -333,7 +538,7 @@ function mineStone(){
 stone++;
 
 
-showText("+1 Stone");
+popup("+1 Stone");
 
 
 update();
@@ -346,102 +551,35 @@ update();
 
 
 /* =========================
-   TELEPORTER
+POPUP
 ========================= */
 
 
-function unlockTeleporter(){
+function popup(text){
 
 
-if(
-wood >=100 &&
-stone >=50 &&
-!teleporterUnlocked
-){
-
-wood-=100;
-
-stone-=50;
+let p=document.createElement("div");
 
 
-teleporterUnlocked=true;
+p.innerText=text;
 
 
-document.getElementById("teleporter")
-.style.display="block";
+p.className="floating";
 
 
-alert("Teleporter unlocked!");
+p.style.left="50%";
 
-}
-
-
-}
+p.style.top="50%";
 
 
-
-
-
-function useTeleporter(){
-
-
-if(teleporterUnlocked){
-
-
-document.getElementById("game")
-.style.display="none";
-
-
-document.getElementById("quarry")
-.style.display="block";
-
-
-locationName="Quarry";
-
-
-update();
-
-
-}
-
-
-
-}
-
-
-
-
-
-/* =========================
-   TEXT EFFECT
-========================= */
-
-
-function showText(text){
-
-
-let t=document.createElement("div");
-
-
-t.innerText=text;
-
-
-t.className="floating";
-
-
-t.style.left="50%";
-
-t.style.top="50%";
-
-
-document.body.appendChild(t);
+document.body.appendChild(p);
 
 
 
 setTimeout(()=>{
 
 
-t.remove();
+p.remove();
 
 
 },1000);
@@ -454,31 +592,74 @@ t.remove();
 
 
 
+
+
 /* =========================
-   UI
+UI
 ========================= */
 
 
 function update(){
 
 
+if(currentArea==="Island"){
+
+
 document.getElementById("stats")
+
 .innerHTML=
 
 `
-Location: ${locationName}
-<br>
-Wood: ${wood}
-<br>
-Stone: ${stone}
-<br>
+
+Area: Island 🌴
+
 <br>
 
-<button onclick="unlockTeleporter()">
-Unlock Teleporter
+Wood: ${wood}
+
 <br>
-100 Wood + 50 Stone
-</button>
+
+Stone: ${stone}
+
+<br><br>
+
+${!tpUnlocked?
+
+"Need 250 Wood for Teleporter"
+
+:
+
+"Teleporter unlocked!"
+
+}
+
+
+`;
+
+
+
+}
+
+
+
+else{
+
+
+document.getElementById("quarryStats")
+
+.innerHTML=
+
+`
+
+Area: Quarry 🪨
+
+<br>
+
+Wood: ${wood}
+
+<br>
+
+Stone: ${stone}
 
 `;
 
@@ -489,82 +670,79 @@ Unlock Teleporter
 
 
 
+}
+
+
+
+
+
+
 
 /* =========================
-   SAVE
+SAVE
 ========================= */
 
 
 function saveGame(){
 
 
-localStorage.setItem(
-"wood",
-wood
-);
+localStorage.setItem("wood",wood);
 
+localStorage.setItem("stone",stone);
 
-localStorage.setItem(
-"stone",
-stone
-);
-
-
-localStorage.setItem(
-"teleporter",
-teleporterUnlocked
-);
-
+localStorage.setItem("tp",tpUnlocked);
 
 
 alert("Saved!");
 
-
-
 }
 
-
-
-
-/* =========================
-   LOAD
-========================= */
 
 
 function loadGame(){
 
 
 wood=
+
 Number(localStorage.getItem("wood"))
+
 ||0;
+
 
 
 stone=
+
 Number(localStorage.getItem("stone"))
+
 ||0;
 
 
 
-teleporterUnlocked=
-localStorage.getItem("teleporter")
+tpUnlocked=
+
+localStorage.getItem("tp")
+
 ==="true";
 
 
 
-if(teleporterUnlocked){
+if(tpUnlocked){
 
 
 document.getElementById("teleporter")
+
+.style.display="block";
+
+
+document.getElementById("shop")
+
 .style.display="block";
 
 
 }
 
 
-
 }
-
-
 
 
 
@@ -578,4 +756,5 @@ update();
 
 
 </body>
+
 </html>
