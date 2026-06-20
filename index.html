@@ -218,6 +218,10 @@ button:disabled {
    SHOP
 ========================= */
 
+/* =========================
+   SHOP PANEL
+========================= */
+
 #shopPanel {
     position:fixed;
     bottom:20px;
@@ -231,6 +235,64 @@ button:disabled {
     overflow-y:auto;
     z-index:50;
     display:none;
+}
+
+/* =========================
+   SHOP BUTTON
+========================= */
+
+#shopButton {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    padding:12px 20px;
+    background:rgba(100,200,255,0.3);
+    border:2px solid rgba(100,200,255,0.7);
+    color:#87CEEB;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:8px;
+    z-index:50;
+    display:none;
+    animation:slideInRight 0.4s ease-out;
+    transition:0.2s;
+}
+
+#shopButton:hover {
+    background:rgba(100,200,255,0.6);
+    border:2px solid #87CEEB;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity:0;
+        transform:translateX(300px);
+    }
+    to {
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+/* =========================
+   TREE CLICK ANIMATION
+========================= */
+
+.tree-click {
+    animation:treeClick 0.3s ease-out !important;
+}
+
+@keyframes treeClick {
+    0% {
+        transform:scale(1);
+    }
+    50% {
+        transform:scale(0.95);
+    }
+    100% {
+        transform:scale(1);
+    }
 }
 
 .shopTitle {
@@ -286,19 +348,78 @@ button:disabled {
 }
 
 /* =========================
-   GAME TIMER
+   BACKPACK SYSTEM
 ========================= */
 
-#gameTimer {
+#backpackBtn {
     position:fixed;
-    top:80px;
-    right:20px;
-    background:rgba(0,0,0,0.5);
-    padding:12px 16px;
+    top:10px;
+    left:10px;
+    z-index:1000;
+    padding:10px 14px;
+    font-size:18px;
+    background:rgba(0,0,0,0.4);
+    border:1px solid rgba(255,255,255,0.5);
+    cursor:pointer;
+    border-radius:4px;
+}
+
+#backpackMenu {
+    position:fixed;
+    top:60px;
+    left:10px;
+    background:rgba(0,0,0,0.8);
+    border:2px solid rgba(200,150,100,0.7);
+    padding:16px;
     border-radius:8px;
-    font-size:14px;
-    color:#aaa;
-    z-index:50;
+    width:280px;
+    z-index:999;
+    display:none;
+}
+
+.backpackTitle {
+    font-size:16px;
+    font-weight:bold;
+    color:#D4A574;
+    margin-bottom:12px;
+}
+
+.inventoryItem {
+    background:rgba(0,0,0,0.4);
+    padding:12px;
+    margin:8px 0;
+    border-radius:4px;
+    border-left:3px solid #D4A574;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.inventoryItem:hover {
+    background:rgba(0,0,0,0.6);
+    border-left:3px solid #FFD700;
+}
+
+.itemUseBtn {
+    padding:6px 10px;
+    margin-top:8px;
+    width:100%;
+    font-size:12px;
+    background:rgba(255,215,0,0.3);
+    border:1px solid #FFD700;
+    color:#FFD700;
+    cursor:pointer;
+    border-radius:3px;
+}
+
+.itemUseBtn:hover {
+    background:rgba(255,215,0,0.5);
+}
+
+.emptyBackpack {
+    color:#888;
+    font-size:12px;
+    text-align:center;
+    padding:20px;
 }
 
 /* =========================
@@ -326,6 +447,12 @@ button:disabled {
 
 <body>
 
+<button id="backpackBtn" onclick="toggleBackpack()">🎒</button>
+
+<div id="backpackMenu">
+  <div class="backpackTitle">🎒 Backpack</div>
+  <div id="inventoryList"></div>
+</div>
 
 <div id="topBar">
 
@@ -357,8 +484,6 @@ style="display:none;">
 
 <div id="stats"></div>
 
-<div id="gameTimer">Playtime: <span id="timer">0s</span></div>
-
 </div>
 
 
@@ -381,6 +506,8 @@ onclick="mineStone()">
   <div class="shopTitle">🛒 Shop</div>
   <div id="shopItems"></div>
 </div>
+
+<button id="shopButton" onclick="toggleShop()">🛒 Shop</button>
 
 
 
@@ -448,11 +575,14 @@ let state = {
   shopUnlocked: false,
   locationName: "Island",
   location: "island",
-  upgradePurchased: {}
+  upgradePurchased: {},
+  inventory: [],
+  backpackOpen: false
 };
 
 let gameStartTime = Date.now();
 let lastUpdateTime = Date.now();
+let currentPlaytimeStr = "0s";
 
 
 /* =========================
@@ -465,6 +595,13 @@ function gatherWood(){
     const amount = state.woodPerClick;
     state.wood += amount;
     showText("+"+amount.toFixed(1)+" Wood");
+    
+    // Add tree click animation
+    const treeEl = document.getElementById("tree");
+    treeEl.classList.remove("tree-click");
+    void treeEl.offsetWidth; // Trigger reflow to restart animation
+    treeEl.classList.add("tree-click");
+    
     update();
   }
 }
@@ -503,9 +640,20 @@ function unlockTeleporter(){
   ){
     state.wood -= 250;
     state.teleporterUnlocked = true;
+    state.shopUnlocked = true;
+    
+    // Add teleporter to inventory
+    state.inventory.push({
+      id: 'teleporter',
+      name: '🚪 Teleporter',
+      description: 'Travel to Quarry',
+      type: 'travel'
+    });
+    
     document.getElementById("teleporter").style.display = "block";
     document.getElementById("quarryBtn").style.display = "inline-block";
-    alert("Teleporter unlocked!");
+    document.getElementById("shopButton").style.display = "block";
+    alert("Teleporter & Shop unlocked!");
     update();
   }
 }
@@ -517,12 +665,59 @@ function useTeleporter(){
   }
 }
 
+/* =========================
+   BACKPACK SYSTEM
+========================= */
+
+function toggleBackpack(){
+  state.backpackOpen = !state.backpackOpen;
+  document.getElementById("backpackMenu").style.display = state.backpackOpen ? "block" : "none";
+  updateBackpack();
+}
+
+function updateBackpack(){
+  const list = document.getElementById("inventoryList");
+  
+  if(state.inventory.length === 0) {
+    list.innerHTML = '<div class="emptyBackpack">Empty</div>';
+    return;
+  }
+
+  list.innerHTML = state.inventory.map((item, idx) => `
+    <div class="inventoryItem">
+      <div style="font-weight:bold;">${item.name}</div>
+      <div style="font-size:11px; color:#aaa; margin:4px 0;">${item.description}</div>
+      <button class="itemUseBtn" onclick="useInventoryItem(${idx})">Use Item</button>
+    </div>
+  `).join('');
+}
+
+function useInventoryItem(idx){
+  const item = state.inventory[idx];
+  
+  if(item.type === 'travel' && item.id === 'teleporter') {
+    goToQuarry();
+    state.backpackOpen = false;
+    document.getElementById("backpackMenu").style.display = "none";
+  }
+}
+
+function toggleShop(){
+  const panel = document.getElementById("shopPanel");
+  if(panel.style.display === "block") {
+    panel.style.display = "none";
+  } else {
+    panel.style.display = "block";
+  }
+}
+
 function goToIsland(){
   state.location = "island";
   state.locationName = "Island";
   document.getElementById("game").style.display = "block";
   document.getElementById("quarry").style.display = "none";
   document.getElementById("shopPanel").style.display = "none";
+  document.getElementById("shopButton").style.display = "none";
   document.getElementById("islandBtn").classList.add("active");
   document.getElementById("quarryBtn").classList.remove("active");
   update();
@@ -534,7 +729,9 @@ function goToQuarry(){
   state.locationName = "Quarry";
   document.getElementById("game").style.display = "none";
   document.getElementById("quarry").style.display = "block";
-  document.getElementById("shopPanel").style.display = "block";
+  if(state.shopUnlocked) {
+    document.getElementById("shopButton").style.display = "block";
+  }
   document.getElementById("islandBtn").classList.remove("active");
   document.getElementById("quarryBtn").classList.add("active");
   update();
@@ -640,6 +837,9 @@ function update(){
   document.getElementById("stats").innerHTML = `
 Location: ${state.locationName}
 <br>
+Playtime: ${currentPlaytimeStr}
+<br>
+<br>
 Wood: ${Math.floor(state.wood)}
 <br>
 Stone: ${Math.floor(state.stone)}
@@ -724,7 +924,7 @@ function gameLoop() {
   if(hours > 0) timeStr += hours + 'h ';
   if(mins > 0 || hours > 0) timeStr += mins + 'm ';
   timeStr += secs + 's';
-  document.getElementById("timer").textContent = timeStr;
+  currentPlaytimeStr = timeStr;
 
   update();
   requestAnimationFrame(gameLoop);
@@ -735,20 +935,15 @@ function gameLoop() {
    SAVE
 ========================= */
 
-
 function saveGame(){
   localStorage.setItem("islandBuilderState", JSON.stringify(state));
   localStorage.setItem("gameStartTime", gameStartTime);
-  alert("Saved!");
+  alert("Game saved! 💾");
 }
-
-
-
 
 /* =========================
    LOAD
 ========================= */
-
 
 function loadGame(){
   const saved = localStorage.getItem("islandBuilderState");
