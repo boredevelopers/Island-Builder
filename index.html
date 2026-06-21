@@ -45,12 +45,15 @@ body {
     top: 0;
     z-index: 1;
     cursor: pointer;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 #miner,
 #rock {
     position: absolute;
-    width: 150px;
+    width: 220px;
     cursor: pointer;
     image-rendering: pixelated;
     transition: 0.1s;
@@ -192,7 +195,7 @@ button:disabled {
 #backpack {
     position: fixed;
     left: 10px;
-    top: 60px;
+    top: 260px;
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(200, 150, 100, 0.7);
     padding: 15px;
@@ -321,6 +324,10 @@ button:disabled {
     <div>🌳/s: <span id="woodPerSecText">0</span></div>
     <div>🪨/s: <span id="stonePerSecText">0</span></div>
     <div id="generatorsText"></div>
+    <button id="unlockBtn" onclick="unlockTeleporter()" style="width: 100%; margin-top: 10px;">
+        Unlock Teleporter<br>
+        <span style="font-size: 12px;">250 Wood</span>
+    </button>
 </div>
 
 <div id="topBar">
@@ -333,17 +340,13 @@ button:disabled {
 </div>
 
 <div id="island">
-    <img id="tree" src="assets/tree.png" onclick="gatherWood()">
-    <button id="unlockBtn" onclick="unlockTeleporter()" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1500;">
-        Unlock Teleporter<br>
-        <span style="font-size: 12px;">250 Wood</span>
-    </button>
+    <img id="tree" src="assets/tree.png" onclick="gatherWood(event)">
 </div>
 
 <div id="quarry">
     <img id="quarryImage" src="assets/quarry.png">
     <img id="miner" src="assets/miner.png" onclick="clickMiner()">
-    <img id="rock" src="assets/rock.png" onclick="gatherStone()">
+    <img id="rock" src="assets/rock.png" onclick="gatherStone(event)">
     <button onclick="returnIsland()" style="position: absolute; bottom: 20px; left: 20px;">← Island</button>
 </div>
 
@@ -429,22 +432,22 @@ const COSTS = {
    RESOURCES
 ========================= */
 
-function gatherWood() {
+function gatherWood(event) {
     if (state.location === "island") {
         state.wood += state.woodPerClick;
-        showFloatingText("+" + state.woodPerClick.toFixed(1) + " Wood", "#8B4513");
+        showFloatingText("+" + state.woodPerClick.toFixed(1) + " Wood", "#8B4513", event);
         updateScreen();
     }
 }
 
-function gatherStone() {
+function gatherStone(event) {
     if (state.location === "quarry") {
         if (!state.pickaxeUnlocked) {
             showMinerMessage("You need a pickaxe to mine! Buy one from the shop.");
             return;
         }
         state.stone += state.stonePerClick;
-        showFloatingText("+" + state.stonePerClick.toFixed(1) + " Stone", "#A9A9A9");
+        showFloatingText("+" + state.stonePerClick.toFixed(1) + " Stone", "#A9A9A9", event);
         updateScreen();
     }
 }
@@ -632,13 +635,18 @@ function updateScreen() {
     document.getElementById("pickaxeBtn").disabled = state.pickaxeUnlocked;
 }
 
-function showFloatingText(text, color) {
+function showFloatingText(text, color, event) {
     let el = document.createElement("div");
     el.className = "floatingText";
     el.innerText = text;
     el.style.color = color;
-    el.style.left = (Math.random() * window.innerWidth) + "px";
-    el.style.top = (Math.random() * window.innerHeight) + "px";
+    if (event && event.clientX !== undefined) {
+        el.style.left = event.clientX + "px";
+        el.style.top = event.clientY + "px";
+    } else {
+        el.style.left = (window.innerWidth / 2) + "px";
+        el.style.top = (window.innerHeight / 2) + "px";
+    }
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1500);
 }
