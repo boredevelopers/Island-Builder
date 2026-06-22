@@ -14,7 +14,7 @@
 body {
     font-family: Arial, sans-serif;
     color: white;
-    background: linear-gradient(to bottom, #87ceeb 0%, #87ceeb 55%, #3cb371 55%, #2e8b57 100%);
+    background: linear-gradient(to bottom, skyblue 0%, skyblue 55%, mediumseagreen 55%, seagreen 100%);
     height: 100vh;
     overflow: hidden;
 }
@@ -32,7 +32,7 @@ body {
     width: 100vw;
     height: 100vh;
     position: relative;
-    background: linear-gradient(to bottom, #555, #222);
+    background: linear-gradient(to bottom, dimgray, black);
 }
 
 #tree,
@@ -77,6 +77,20 @@ body {
     transform: scale(1.1);
 }
 
+#hutsContainer {
+    position: absolute;
+    bottom: 10%;
+    left: 5%;
+    display: flex;
+    gap: 15px;
+    z-index: 5;
+}
+
+.hutIcon {
+    width: 70px;
+    image-rendering: pixelated;
+}
+
 /* TOP BAR */
 
 #topBar {
@@ -111,7 +125,7 @@ button:disabled {
 #bagNotify {
     position: relative;
     display: inline-block;
-    background: #FF6B6B;
+    background: lightcoral;
     color: white;
     border-radius: 50%;
     width: 20px;
@@ -135,17 +149,65 @@ button:disabled {
     font-size: 13px;
     z-index: 1500;
     line-height: 1.6;
+    width: 220px;
+}
+
+#gameStats .statDivider {
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    margin: 6px 0;
+}
+
+/* VILLAGER PANEL */
+
+#villagerPanel {
+    position: fixed;
+    top: 10px;
+    left: 240px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1500;
+    width: 230px;
+    display: none;
+}
+
+#villagerPanel.show {
+    display: block;
+}
+
+#villagerPanel h3 {
+    color: gold;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.roleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    padding: 6px 8px;
+    margin: 4px 0;
+    border-radius: 4px;
+}
+
+.roleRow button {
+    padding: 2px 8px;
+    font-size: 12px;
+    margin: 0 2px;
 }
 
 /* SHOP */
 
 #shop {
     position: fixed;
-    right: -320px;
+    right: -340px;
     top: 0;
-    width: 300px;
+    width: 320px;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     border-left: 2px solid rgba(100, 200, 255, 0.5);
     padding: 20px;
     overflow-y: auto;
@@ -158,16 +220,37 @@ button:disabled {
 }
 
 #shop h2 {
-    color: #4DD0FF;
+    color: deepskyblue;
     margin-bottom: 15px;
     font-size: 18px;
 }
 
-#shop h3 {
-    color: #87CEEB;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    font-size: 14px;
+.shopTabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 15px;
+}
+
+.shopTab {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 12px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.shopTab.active {
+    background: rgba(100,200,255,0.4);
+    border-color: deepskyblue;
+}
+
+.shopCategory {
+    display: none;
+}
+
+.shopCategory.active {
+    display: block;
 }
 
 .shopItem {
@@ -175,7 +258,7 @@ button:disabled {
     padding: 10px;
     margin: 8px 0;
     border-radius: 4px;
-    border-left: 3px solid #4DD0FF;
+    border-left: 3px solid deepskyblue;
 }
 
 .shopItem button {
@@ -186,8 +269,13 @@ button:disabled {
 
 .shopItem p {
     font-size: 11px;
-    color: #aaa;
+    color: darkgray;
     margin-top: 4px;
+}
+
+.shopItem .itemTitle {
+    font-weight: bold;
+    font-size: 13px;
 }
 
 /* BACKPACK */
@@ -202,13 +290,19 @@ button:disabled {
     display: none;
     z-index: 2000;
     border-radius: 8px;
-    min-width: 200px;
+    min-width: 220px;
 }
 
 #backpack h2 {
-    color: #D4A574;
-    margin-bottom: 10px;
+    color: tan;
+    margin-bottom: 6px;
     font-size: 16px;
+}
+
+#bagSlotsText {
+    font-size: 11px;
+    color: darkgray;
+    margin-bottom: 10px;
 }
 
 #bagItems button {
@@ -217,8 +311,8 @@ button:disabled {
     margin: 8px 0;
     padding: 8px;
     background: rgba(255, 215, 0, 0.3);
-    border: 1px solid #FFD700;
-    color: #FFD700;
+    border: 1px solid gold;
+    color: gold;
     border-radius: 4px;
 }
 
@@ -227,7 +321,7 @@ button:disabled {
 }
 
 #bagEmpty {
-    color: #888;
+    color: gray;
     text-align: center;
     padding: 10px;
 }
@@ -241,7 +335,7 @@ button:disabled {
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #FFD700;
+    border: 2px solid gold;
     padding: 30px;
     border-radius: 8px;
     z-index: 3000;
@@ -251,13 +345,13 @@ button:disabled {
 }
 
 #minerMessage {
-    border-color: #8B4513;
+    border-color: saddlebrown;
 }
 
 .modalTitle {
     font-size: 20px;
     font-weight: bold;
-    color: #FFD700;
+    color: gold;
     margin-bottom: 20px;
 }
 
@@ -267,8 +361,8 @@ button:disabled {
     padding: 10px;
     margin: 10px 0;
     background: rgba(255, 215, 0, 0.3);
-    border: 1px solid #FFD700;
-    color: #FFD700;
+    border: 1px solid gold;
+    color: gold;
     cursor: pointer;
     border-radius: 4px;
     font-weight: bold;
@@ -296,6 +390,7 @@ button:disabled {
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     animation: float 1s ease-out forwards;
+    z-index: 2500;
 }
 
 @keyframes float {
@@ -318,16 +413,52 @@ button:disabled {
 <div id="gameStats">
     <div>Location: <span id="locationText">Island</span></div>
     <div>Playtime: <span id="timeText">0s</span></div>
-    <div style="margin-top: 8px;">🌳 Wood: <span id="woodText">0</span></div>
+    <div>Island Level: <span id="islandLevelText">1</span></div>
+    <div class="statDivider"></div>
+    <div>🌳 Wood: <span id="woodText">0</span></div>
     <div>🪨 Stone: <span id="stoneText">0</span></div>
-    <div style="margin-top: 8px; color: #FFD700;">Per Second:</div>
+    <div>🌾 Food: <span id="foodText">0</span></div>
+    <div class="statDivider"></div>
+    <div style="color: gold;">Per Second:</div>
     <div>🌳/s: <span id="woodPerSecText">0</span></div>
     <div>🪨/s: <span id="stonePerSecText">0</span></div>
-    <div id="generatorsText"></div>
+    <div>🌾/s: <span id="foodPerSecText">0</span></div>
+    <div class="statDivider"></div>
+    <div>🏠 Huts: <span id="hutsText">0</span></div>
+    <div>👥 Villagers: <span id="villagersText">0</span> (Idle: <span id="idleVillagersText">0</span>)</div>
     <button id="unlockBtn" onclick="unlockTeleporter()" style="width: 100%; margin-top: 10px;">
         Unlock Teleporter<br>
         <span style="font-size: 12px;">250 Wood</span>
     </button>
+    <button id="villagerToggleBtn" onclick="toggleVillagerPanel()" style="width: 100%; margin-top: 6px; display:none;">
+        👷 Manage Workers
+    </button>
+</div>
+
+<div id="villagerPanel">
+    <h3>👷 Worker Assignment</h3>
+    <div class="roleRow">
+        <span>🪓 Lumberjack: <b id="lumberjackCount">0</b></span>
+        <div>
+            <button onclick="unassign('lumberjack')">-</button>
+            <button onclick="assign('lumberjack')">+</button>
+        </div>
+    </div>
+    <div class="roleRow">
+        <span>⛏️ Miner: <b id="minerCount">0</b></span>
+        <div>
+            <button onclick="unassign('miner')">-</button>
+            <button onclick="assign('miner')">+</button>
+        </div>
+    </div>
+    <div class="roleRow">
+        <span>🌾 Farmer: <b id="farmerCount">0</b></span>
+        <div>
+            <button onclick="unassign('farmer')">-</button>
+            <button onclick="assign('farmer')">+</button>
+        </div>
+    </div>
+    <div style="margin-top:8px; font-size:11px; color:darkgray;">Each worker: +0.2 resource/sec</div>
 </div>
 
 <div id="topBar">
@@ -341,43 +472,68 @@ button:disabled {
 
 <div id="island">
     <img id="tree" src="assets/tree.png" onclick="gatherWood(event)">
+    <div id="hutsContainer"></div>
 </div>
 
 <div id="quarry">
     <img id="quarryImage" src="assets/quarry.png">
     <img id="miner" src="assets/miner.png" onclick="clickMiner()">
     <img id="rock" src="assets/rock.png" onclick="gatherStone(event)">
-    <button onclick="returnIsland()" style="position: absolute; bottom: 20px; left: 20px;">← Island</button>
+    <button onclick="returnIsland()" style="position: absolute; bottom: 20px; left: 20px; z-index: 50;">← Island</button>
 </div>
 
 <div id="shop">
     <h2>🛒 Shop</h2>
-    
-    <h3>🌳 Wood Generators</h3>
-    <div class="shopItem">
-        <button onclick="buyLumberjack()">🪓 Lumberjack</button>
-        <p id="lumberInfo">Cost: 50 Wood | +0.1/s</p>
-    </div>
-    
-    <div class="shopItem">
-        <button onclick="buyWorker()">👷 Worker</button>
-        <p id="workerInfo">Cost: 100 Wood + 5 Stone | +0.3/s</p>
+
+    <div class="shopTabs">
+        <div class="shopTab active" data-tab="buildings" onclick="switchShopTab('buildings')">🏠 Buildings</div>
+        <div class="shopTab" data-tab="tools" onclick="switchShopTab('tools')">⛏️ Tools</div>
+        <div class="shopTab" data-tab="island" onclick="switchShopTab('island')">🌴 Island</div>
     </div>
 
-    <h3>⛏️ Mining</h3>
-    <div class="shopItem">
-        <button onclick="buyPickaxe()" id="pickaxeBtn">⛏️ Pickaxe</button>
-        <p id="pickaxeInfo">Cost: 50 Wood</p>
+    <div class="shopCategory active" id="cat-buildings">
+        <div class="shopItem">
+            <div class="itemTitle">🏠 Hut</div>
+            <p id="hutInfo">Creates 1 villager | Cost: 100 Wood + 50 Stone</p>
+            <button onclick="buyHut()">Build Hut</button>
+        </div>
+        <div class="shopItem">
+            <div class="itemTitle">🎒 Expand Backpack</div>
+            <p id="backpackUpgradeInfo">+5 slots | Cost: 100 Wood</p>
+            <button onclick="buyBackpackUpgrade()">Upgrade</button>
+        </div>
     </div>
 
-    <div class="shopItem">
-        <button onclick="buyMiner()">⛏️ Miner</button>
-        <p id="minerInfo">Cost: 75 Wood + 10 Stone | +0.2/s</p>
+    <div class="shopCategory" id="cat-tools">
+        <div class="shopItem">
+            <div class="itemTitle">⛏️ Pickaxe</div>
+            <p id="pickaxeInfo">Cost: 50 Wood</p>
+            <button onclick="buyPickaxe()" id="pickaxeBtn">Buy</button>
+        </div>
+        <div class="shopItem">
+            <div class="itemTitle">🪓 Better Axe</div>
+            <p id="betterAxeInfo">Wood/click +0.5 | Cost: 150 Wood</p>
+            <button onclick="buyBetterAxe()" id="betterAxeBtn">Buy</button>
+        </div>
+        <div class="shopItem">
+            <div class="itemTitle">⛏️ Better Pickaxe</div>
+            <p id="betterPickInfo">Stone/click +0.5 | Cost: 150 Stone</p>
+            <button onclick="buyBetterPick()" id="betterPickBtn">Buy</button>
+        </div>
+    </div>
+
+    <div class="shopCategory" id="cat-island">
+        <div class="shopItem">
+            <div class="itemTitle">🌴 Upgrade Island</div>
+            <p id="islandUpgradeInfo">+10% click yield | Cost: 300 Wood + 150 Stone</p>
+            <button onclick="upgradeIsland()">Upgrade</button>
+        </div>
     </div>
 </div>
 
 <div id="backpack">
     <h2>🎒 Backpack</h2>
+    <div id="bagSlotsText">0 / 5 slots used</div>
     <div id="bagItems"></div>
     <div id="bagEmpty">Empty</div>
 </div>
@@ -390,7 +546,7 @@ button:disabled {
 
 <div id="minerMessage">
     <div class="modalTitle">⛏️ Miner</div>
-    <div id="minerMessageText" style="color: #FFD700; margin: 15px 0;"></div>
+    <div id="minerMessageText" style="color: gold; margin: 15px 0;"></div>
     <button class="modalButton closeBtn" onclick="closeMinerMessage()">Close</button>
 </div>
 
@@ -403,30 +559,29 @@ button:disabled {
 let state = {
     wood: 0,
     stone: 0,
+    food: 0,
     woodPerClick: 1,
     stonePerClick: 1,
-    lumberjack: 0,
-    worker: 0,
-    miner: 0,
     teleporterUnlocked: false,
     shopUnlocked: false,
     pickaxeUnlocked: false,
+    betterAxeOwned: false,
+    betterPickOwned: false,
     location: "island",
     playTime: 0,
     inventory: [],
-    lastSave: Date.now(),
-    gameStartTime: Date.now()
+    maxSlots: 5,
+    huts: 0,
+    villagers: 0,
+    idleVillagers: 0,
+    assignments: { lumberjack: 0, miner: 0, farmer: 0 },
+    islandLevel: 1,
+    hutCost: { wood: 100, stone: 50 },
+    backpackUpgradeCost: 100,
+    islandUpgradeCost: { wood: 300, stone: 150 }
 };
 
-let woodPerSecond = 0;
-let stonePerSecond = 0;
-
-const COSTS = {
-    lumberjack: { base: 50, scale: 1.15, perSec: 0.1 },
-    worker: { base: 100, scale: 1.15, perSec: 0.3 },
-    miner: { base: 75, scale: 1.15, perSec: 0.2 },
-    pickaxe: { base: 50, scale: 1.15 }
-};
+const PER_WORKER_RATE = 0.2;
 
 /* =========================
    RESOURCES
@@ -435,7 +590,7 @@ const COSTS = {
 function gatherWood(event) {
     if (state.location === "island") {
         state.wood += state.woodPerClick;
-        showFloatingText("+" + state.woodPerClick.toFixed(1) + " Wood", "#8B4513", event);
+        showFloatingText("+" + state.woodPerClick.toFixed(1) + " Wood", "saddlebrown", event);
         updateScreen();
     }
 }
@@ -447,7 +602,7 @@ function gatherStone(event) {
             return;
         }
         state.stone += state.stonePerClick;
-        showFloatingText("+" + state.stonePerClick.toFixed(1) + " Stone", "#A9A9A9", event);
+        showFloatingText("+" + state.stonePerClick.toFixed(1) + " Stone", "darkgray", event);
         updateScreen();
     }
 }
@@ -456,8 +611,22 @@ function clickMiner() {
     if (state.location === "quarry") {
         if (!state.pickaxeUnlocked) {
             showMinerMessage("The miner says: 'Buy a pickaxe from the shop to mine stone!'");
+        } else {
+            showMinerMessage("The miner says: 'Nice pickaxe! Go mine that rock!'");
         }
     }
+}
+
+function getWoodPerSecond() {
+    return state.assignments.lumberjack * PER_WORKER_RATE;
+}
+
+function getStonePerSecond() {
+    return state.assignments.miner * PER_WORKER_RATE;
+}
+
+function getFoodPerSecond() {
+    return state.assignments.farmer * PER_WORKER_RATE;
 }
 
 /* =========================
@@ -469,11 +638,10 @@ function unlockTeleporter() {
         state.wood -= 250;
         state.teleporterUnlocked = true;
         state.shopUnlocked = true;
-        state.inventory.push("🚪 Teleporter");
+        addToInventory("🚪 Teleporter");
         document.getElementById("unlockBtn").style.display = "none";
         document.getElementById("shopBtn").style.display = "inline-block";
         alert("✅ Teleporter & Shop Unlocked! Check your backpack!");
-        updateBackpack();
         updateScreen();
     } else if (state.wood < 250) {
         alert("Need 250 Wood! Have: " + Math.floor(state.wood));
@@ -501,6 +669,15 @@ function returnIsland() {
    BACKPACK
 ========================= */
 
+function addToInventory(itemName) {
+    if (state.inventory.length >= state.maxSlots) {
+        alert("Backpack full! Upgrade it in the shop.");
+        return false;
+    }
+    state.inventory.push(itemName);
+    return true;
+}
+
 function openBackpack() {
     let bag = document.getElementById("backpack");
     bag.style.display = bag.style.display === "block" ? "none" : "block";
@@ -511,6 +688,9 @@ function updateBackpack() {
     let items = document.getElementById("bagItems");
     let empty = document.getElementById("bagEmpty");
     let notify = document.getElementById("bagNotify");
+    let slotsText = document.getElementById("bagSlotsText");
+
+    slotsText.innerText = state.inventory.length + " / " + state.maxSlots + " slots used";
 
     if (state.inventory.length === 0) {
         items.innerHTML = "";
@@ -546,6 +726,61 @@ function showMinerMessage(text) {
 }
 
 /* =========================
+   BUILDINGS / VILLAGERS
+========================= */
+
+function buyHut() {
+    const cost = state.hutCost;
+    if (state.wood >= cost.wood && state.stone >= cost.stone) {
+        state.wood -= cost.wood;
+        state.stone -= cost.stone;
+        state.huts++;
+        state.villagers++;
+        state.idleVillagers++;
+        state.hutCost.wood = Math.ceil(cost.wood * 1.2);
+        state.hutCost.stone = Math.ceil(cost.stone * 1.2);
+        renderHuts();
+        document.getElementById("villagerToggleBtn").style.display = "block";
+        updateScreen();
+    } else {
+        alert("Not enough resources for a Hut!");
+    }
+}
+
+function renderHuts() {
+    let container = document.getElementById("hutsContainer");
+    container.innerHTML = "";
+    for (let i = 0; i < state.huts; i++) {
+        let img = document.createElement("img");
+        img.src = "assets/hut.png";
+        img.className = "hutIcon";
+        container.appendChild(img);
+    }
+}
+
+function toggleVillagerPanel() {
+    document.getElementById("villagerPanel").classList.toggle("show");
+}
+
+function assign(role) {
+    if (state.idleVillagers > 0) {
+        state.idleVillagers--;
+        state.assignments[role]++;
+        updateScreen();
+    } else {
+        alert("No idle villagers available! Build more huts.");
+    }
+}
+
+function unassign(role) {
+    if (state.assignments[role] > 0) {
+        state.assignments[role]--;
+        state.idleVillagers++;
+        updateScreen();
+    }
+}
+
+/* =========================
    SHOP
 ========================= */
 
@@ -557,42 +792,11 @@ function toggleShop() {
     document.getElementById("shop").classList.toggle("open");
 }
 
-function getCost(type) {
-    const cost = COSTS[type].base;
-    const level = state[type];
-    return Math.ceil(cost * Math.pow(COSTS[type].scale, level));
-}
-
-function buyLumberjack() {
-    const cost = getCost("lumberjack");
-    if (state.wood >= cost) {
-        state.wood -= cost;
-        state.lumberjack++;
-        woodPerSecond += COSTS.lumberjack.perSec;
-        updateScreen();
-    }
-}
-
-function buyWorker() {
-    const cost = getCost("worker");
-    if (state.wood >= cost && state.stone >= 5) {
-        state.wood -= cost;
-        state.stone -= 5;
-        state.worker++;
-        woodPerSecond += COSTS.worker.perSec;
-        updateScreen();
-    }
-}
-
-function buyMiner() {
-    const cost = getCost("miner");
-    if (state.wood >= cost && state.stone >= 10) {
-        state.wood -= cost;
-        state.stone -= 10;
-        state.miner++;
-        stonePerSecond += COSTS.miner.perSec;
-        updateScreen();
-    }
+function switchShopTab(tab) {
+    document.querySelectorAll(".shopTab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".shopCategory").forEach(c => c.classList.remove("active"));
+    document.querySelector(`.shopTab[data-tab="${tab}"]`).classList.add("active");
+    document.getElementById("cat-" + tab).classList.add("active");
 }
 
 function buyPickaxe() {
@@ -600,12 +804,74 @@ function buyPickaxe() {
         alert("Already own pickaxe!");
         return;
     }
-    const cost = getCost("pickaxe");
-    if (state.wood >= cost) {
-        state.wood -= cost;
+    if (state.wood >= 50) {
+        state.wood -= 50;
         state.pickaxeUnlocked = true;
         alert("✅ Pickaxe unlocked! Now mine stone in the quarry!");
         updateScreen();
+    } else {
+        alert("Need 50 Wood!");
+    }
+}
+
+function buyBetterAxe() {
+    if (state.betterAxeOwned) {
+        alert("Already owned!");
+        return;
+    }
+    if (state.wood >= 150) {
+        state.wood -= 150;
+        state.woodPerClick += 0.5;
+        state.betterAxeOwned = true;
+        updateScreen();
+    } else {
+        alert("Need 150 Wood!");
+    }
+}
+
+function buyBetterPick() {
+    if (state.betterPickOwned) {
+        alert("Already owned!");
+        return;
+    }
+    if (state.stone >= 150) {
+        state.stone -= 150;
+        state.stonePerClick += 0.5;
+        state.betterPickOwned = true;
+        updateScreen();
+    } else {
+        alert("Need 150 Stone!");
+    }
+}
+
+function buyBackpackUpgrade() {
+    const cost = state.backpackUpgradeCost;
+    if (state.wood >= cost) {
+        state.wood -= cost;
+        state.maxSlots += 5;
+        state.backpackUpgradeCost = Math.ceil(cost * 1.5);
+        updateScreen();
+        updateBackpack();
+        alert("🎒 Backpack expanded! New capacity: " + state.maxSlots);
+    } else {
+        alert("Need " + cost + " Wood!");
+    }
+}
+
+function upgradeIsland() {
+    const cost = state.islandUpgradeCost;
+    if (state.wood >= cost.wood && state.stone >= cost.stone) {
+        state.wood -= cost.wood;
+        state.stone -= cost.stone;
+        state.islandLevel++;
+        state.woodPerClick *= 1.1;
+        state.stonePerClick *= 1.1;
+        state.islandUpgradeCost.wood = Math.ceil(cost.wood * 1.5);
+        state.islandUpgradeCost.stone = Math.ceil(cost.stone * 1.5);
+        alert("🌴 Island upgraded to Level " + state.islandLevel + "! Click yields increased.");
+        updateScreen();
+    } else {
+        alert("Not enough resources to upgrade the island!");
     }
 }
 
@@ -616,23 +882,36 @@ function buyPickaxe() {
 function updateScreen() {
     document.getElementById("woodText").innerText = Math.floor(state.wood);
     document.getElementById("stoneText").innerText = Math.floor(state.stone);
-    document.getElementById("woodPerSecText").innerText = woodPerSecond.toFixed(1);
-    document.getElementById("stonePerSecText").innerText = stonePerSecond.toFixed(1);
+    document.getElementById("foodText").innerText = Math.floor(state.food);
+    document.getElementById("woodPerSecText").innerText = getWoodPerSecond().toFixed(1);
+    document.getElementById("stonePerSecText").innerText = getStonePerSecond().toFixed(1);
+    document.getElementById("foodPerSecText").innerText = getFoodPerSecond().toFixed(1);
     document.getElementById("timeText").innerText = state.playTime + "s";
+    document.getElementById("islandLevelText").innerText = state.islandLevel;
+    document.getElementById("hutsText").innerText = state.huts;
+    document.getElementById("villagersText").innerText = state.villagers;
+    document.getElementById("idleVillagersText").innerText = state.idleVillagers;
 
-    let genText = "";
-    if (state.lumberjack > 0) genText += `<div>🪓 Lumberjacks: ${state.lumberjack}</div>`;
-    if (state.worker > 0) genText += `<div>👷 Workers: ${state.worker}</div>`;
-    if (state.miner > 0) genText += `<div>⛏️ Miners: ${state.miner}</div>`;
-    if (state.pickaxeUnlocked) genText += `<div>✓ Pickaxe</div>`;
-    document.getElementById("generatorsText").innerHTML = genText ? `<div style="margin-top: 8px;">${genText}</div>` : "";
+    document.getElementById("lumberjackCount").innerText = state.assignments.lumberjack;
+    document.getElementById("minerCount").innerText = state.assignments.miner;
+    document.getElementById("farmerCount").innerText = state.assignments.farmer;
 
-    // Update shop costs
-    document.getElementById("lumberInfo").innerText = `Owned: ${state.lumberjack} | Cost: ${getCost("lumberjack")} Wood`;
-    document.getElementById("workerInfo").innerText = `Owned: ${state.worker} | Cost: ${getCost("worker")} Wood + 5 Stone`;
-    document.getElementById("minerInfo").innerText = `Owned: ${state.miner} | Cost: ${getCost("miner")} Wood + 10 Stone`;
-    document.getElementById("pickaxeInfo").innerText = state.pickaxeUnlocked ? "✓ Owned" : `Cost: ${getCost("pickaxe")} Wood`;
+    // Shop info text
+    document.getElementById("hutInfo").innerText = `Creates 1 villager | Cost: ${state.hutCost.wood} Wood + ${state.hutCost.stone} Stone`;
+    document.getElementById("backpackUpgradeInfo").innerText = `+5 slots (current: ${state.maxSlots}) | Cost: ${state.backpackUpgradeCost} Wood`;
+    document.getElementById("pickaxeInfo").innerText = state.pickaxeUnlocked ? "✓ Owned" : "Cost: 50 Wood";
     document.getElementById("pickaxeBtn").disabled = state.pickaxeUnlocked;
+    document.getElementById("betterAxeInfo").innerText = state.betterAxeOwned ? "✓ Owned" : "Wood/click +0.5 | Cost: 150 Wood";
+    document.getElementById("betterAxeBtn").disabled = state.betterAxeOwned;
+    document.getElementById("betterPickInfo").innerText = state.betterPickOwned ? "✓ Owned" : "Stone/click +0.5 | Cost: 150 Stone";
+    document.getElementById("betterPickBtn").disabled = state.betterPickOwned;
+    document.getElementById("islandUpgradeInfo").innerText = `+10% click yield | Cost: ${state.islandUpgradeCost.wood} Wood + ${state.islandUpgradeCost.stone} Stone`;
+
+    if (state.huts > 0) {
+        document.getElementById("villagerToggleBtn").style.display = "block";
+    }
+
+    updateBackpack();
 }
 
 function showFloatingText(text, color, event) {
@@ -656,8 +935,9 @@ function showFloatingText(text, color, event) {
 ========================= */
 
 setInterval(() => {
-    state.wood += woodPerSecond;
-    state.stone += stonePerSecond;
+    state.wood += getWoodPerSecond();
+    state.stone += getStonePerSecond();
+    state.food += getFoodPerSecond();
     state.playTime++;
     updateScreen();
 }, 1000);
@@ -668,28 +948,32 @@ setInterval(() => {
 
 function saveGame() {
     localStorage.setItem("islandBuilderState", JSON.stringify(state));
-    localStorage.setItem("woodPerSecond", woodPerSecond);
-    localStorage.setItem("stonePerSecond", stonePerSecond);
     alert("Game saved! 💾");
 }
 
 function loadGame() {
     let saved = localStorage.getItem("islandBuilderState");
     if (saved) {
-        state = JSON.parse(saved);
-        woodPerSecond = parseFloat(localStorage.getItem("woodPerSecond")) || 0;
-        stonePerSecond = parseFloat(localStorage.getItem("stonePerSecond")) || 0;
+        let loaded = JSON.parse(saved);
+        state = Object.assign(state, loaded);
+        // Ensure nested objects exist if loading an older save
+        if (!state.assignments) state.assignments = { lumberjack: 0, miner: 0, farmer: 0 };
+        if (!state.hutCost) state.hutCost = { wood: 100, stone: 50 };
+        if (!state.islandUpgradeCost) state.islandUpgradeCost = { wood: 300, stone: 150 };
     }
-    
+
     if (state.teleporterUnlocked) {
         document.getElementById("unlockBtn").style.display = "none";
         document.getElementById("shopBtn").style.display = "inline-block";
     }
-    
-    if (state.location === "quarry") {
-        state.location = "island";
+
+    if (state.huts > 0) {
+        document.getElementById("villagerToggleBtn").style.display = "block";
     }
-    
+
+    // Always start on island visually
+    state.location = "island";
+    renderHuts();
     updateBackpack();
     updateScreen();
 }
